@@ -5,7 +5,7 @@ const Model = use('Model')
 
 class Configuration extends Model {
   periodo() {
-    return this.belongsTo('App/Models/Periodo')
+    return this.belongsTo('App/Models/User')
   }
 }
 

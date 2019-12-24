@@ -1,6 +1,7 @@
 'use strict'
 
 const faltas = use('App/Models/Falta')
+const db = use('Database')
 
 /** @typedef {import('@adonisjs/framework/src/Request')} Request */
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
@@ -19,7 +20,7 @@ class FaltaController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async index () {
+  async index() {
     return await faltas.all()
   }
 
@@ -31,9 +32,9 @@ class FaltaController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async store ({ request }) {
+  async store({ request }) {
     const data = request.only(['data', 'ordemAula']);
-    return await faltas.create({...data})
+    return await faltas.create({ ...data })
   }
 
   /**
@@ -45,7 +46,7 @@ class FaltaController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async show ({ params }) {
+  async show({ params }) {
     return await faltas.findOrFail(params.id)
   }
 
@@ -57,8 +58,15 @@ class FaltaController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async update ({ params, request, response }) {
+  async update({ params, request }) {
     //TODO - ver como fazer o update
+    const data = request.only(['data', 'ordemAula']);
+    const updated = await db
+      .table('faltas')
+      .where({ id: params.id })
+      .update({ ...data })
+
+    return { updated: updated }
   }
 
   /**
@@ -69,7 +77,7 @@ class FaltaController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async destroy ({ params, auth }) {
+  async destroy({ params, auth }) {
     const falta = await faltas.findOrFail(params.id)
     await falta.delete();
   }

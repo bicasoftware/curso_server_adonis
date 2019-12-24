@@ -3,21 +3,20 @@
 /** @type {import('@adonisjs/lucid/src/Schema')} */
 const Schema = use('Schema')
 
-class ConfigurationSchema extends Schema {
+class ConfigurationsSchema extends Schema {
   up() {
     this.create('configurations', (table) => {
       table.increments()
       table
-        .integer('periodoId')
+        .integer('userId')
         .unsigned()
         .references('id')
-        .inTable('periodos')
+        .inTable('users')
         .onUpdate('CASCADE')
         .onDelete('CASCADE')
-        
       table.boolean('isLight').notNullable().default(true)
-      table.boolean('notify').notNullable().default(true)
-      
+      table.boolean('notify').notNullable().default(false)
+
       table.timestamps()
     })
   }
@@ -27,4 +26,4 @@ class ConfigurationSchema extends Schema {
   }
 }
 
-module.exports = ConfigurationSchema
+module.exports = ConfigurationsSchema

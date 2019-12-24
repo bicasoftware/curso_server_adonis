@@ -1,5 +1,8 @@
 'use strict'
 
+const conf = use('App/Models/Configuration')
+const db = use('Database')
+
 /** @typedef {import('@adonisjs/framework/src/Request')} Request */
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
 /** @typedef {import('@adonisjs/framework/src/View')} View */
@@ -17,19 +20,8 @@ class ConfiguracoeController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async index ({ request, response, view }) {
-  }
-
-  /**
-   * Render a form to be used for creating a new configuracoe.
-   * GET configuracoes/create
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async create ({ request, response, view }) {
+  async index({ auth }) {
+    return await db.table('configurations').where({ userId: auth.user.id }).first()
   }
 
   /**
@@ -40,8 +32,7 @@ class ConfiguracoeController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async store ({ request, response }) {
-  }
+  async store({ request, response }) { }
 
   /**
    * Display a single configuracoe.
@@ -52,19 +43,8 @@ class ConfiguracoeController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async show ({ params, request, response, view }) {
-  }
-
-  /**
-   * Render a form to update an existing configuracoe.
-   * GET configuracoes/:id/edit
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async edit ({ params, request, response, view }) {
+  async show({ params, request, response, view }) {
+    return conf.findOrFail(params.id)
   }
 
   /**
@@ -75,18 +55,15 @@ class ConfiguracoeController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async update ({ params, request, response }) {
-  }
+  async update({ params, request, response }) {
+    const data = request.only(['isLight', 'notify'])
+    const c = await
+      db
+        .table('configurations')
+        .where({ userId: auth.user.id })
+        .update({ ...data })
 
-  /**
-   * Delete a configuracoe with id.
-   * DELETE configuracoes/:id
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   */
-  async destroy ({ params, request, response }) {
+    return { updated: c }
   }
 }
 

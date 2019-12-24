@@ -1,5 +1,8 @@
 'use strict'
 
+const notas = use('App/Models/Aula')
+const db = use('Database')
+
 /** @typedef {import('@adonisjs/framework/src/Request')} Request */
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
 /** @typedef {import('@adonisjs/framework/src/View')} View */
@@ -17,19 +20,8 @@ class NotaController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async index ({ request, response, view }) {
-  }
-
-  /**
-   * Render a form to be used for creating a new nota.
-   * GET notas/create
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async create ({ request, response, view }) {
+  async index() {
+    return await notas.all()
   }
 
   /**
@@ -40,7 +32,9 @@ class NotaController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async store ({ request, response }) {
+  async store({ request }) {
+    const data = request.only(['materiaId', 'data', 'nota'])
+    return notas.create({ ...data })
   }
 
   /**
@@ -52,19 +46,8 @@ class NotaController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async show ({ params, request, response, view }) {
-  }
-
-  /**
-   * Render a form to update an existing nota.
-   * GET notas/:id/edit
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async edit ({ params, request, response, view }) {
+  async show({ params }) {
+    return await notas.findOrFail(params.id)
   }
 
   /**
@@ -75,7 +58,15 @@ class NotaController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async update ({ params, request, response }) {
+  async update({ params, request, response }) {
+    const data = request.only(['materiaId', 'data', 'nota'])
+    const count = await
+      db
+        .table('notas')
+        .where({ id: params.id })
+        .update({ ...data })
+
+    return { updated: count }
   }
 
   /**
@@ -86,7 +77,9 @@ class NotaController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async destroy ({ params, request, response }) {
+  async destroy({ params, request, response }) {
+    const count = await db.table('notas').where({ id: params.id }).delete()
+    return { removed: count }
   }
 }
 

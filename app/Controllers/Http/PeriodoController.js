@@ -1,14 +1,12 @@
 'use strict'
 
-//TODO - IMPLEMENTAR TODOS OS CONTROLLERS
+const periodo = use('App/Models/Periodo')
+const db = use('Database');
 
 /** @typedef {import('@adonisjs/framework/src/Request')} Request */
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
 /** @typedef {import('@adonisjs/framework/src/View')} View */
 
-/**
- * Resourceful controller for interacting with periodos
- */
 class PeriodoController {
   /**
    * Show a list of all periodos.
@@ -19,19 +17,8 @@ class PeriodoController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async index ({ request, response, view }) {
-  }
-
-  /**
-   * Render a form to be used for creating a new periodo.
-   * GET periodos/create
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async create ({ request, response, view }) {
+  async index({ auth }) {
+    return await db.table('periodos').where('userId', auth.user.id);
   }
 
   /**
@@ -42,7 +29,12 @@ class PeriodoController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async store ({ request, response }) {
+  async store({ request, auth }) {
+    const data = request.only([
+      'numperiodo', 'aulasdia', 'inicio', 'termino', 'presObrig', 'medaprov'
+    ])
+
+    return await periodo.create({ ...data, userId: auth.user.id })
   }
 
   /**
@@ -54,19 +46,11 @@ class PeriodoController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async show ({ params, request, response, view }) {
-  }
-
-  /**
-   * Render a form to update an existing periodo.
-   * GET periodos/:id/edit
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async edit ({ params, request, response, view }) {
+  async show({ params, auth }) {
+    return await 
+      db
+        .table('periodos')
+        .where({ id: params.id, userId: auth.user.id })
   }
 
   /**
@@ -77,7 +61,11 @@ class PeriodoController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async update ({ params, request, response }) {
+  async update({ params, request }) {
+    const data = request.only([
+      'numperiodo', 'aulasdia', 'inicio', 'termino', 'presObrig', 'medaprov'
+    ])
+    return await db.table('periodos').where({ id: params.id }).update({ ...data })
   }
 
   /**
@@ -88,7 +76,9 @@ class PeriodoController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async destroy ({ params, request, response }) {
+  async destroy({ params, auth }) {
+    const removed = await db.table('periodos').where({ id: params.id, userId: auth.user.id }).delete();
+    return { removed: removed }
   }
 }
 

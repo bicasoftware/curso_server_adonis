@@ -11,7 +11,7 @@ class PeriodosSchema extends Schema {
         .integer('userId')        
         .unsigned()
         .references('id')
-        .inTable('user')
+        .inTable('users')
         .onUpdate('CASCADE')
         .onDelete('CASCADE')
       

@@ -4,8 +4,8 @@
 const Model = use('Model')
 
 class Periodo extends Model {
-  usuarioId() {
-    return this.belongsTo('App/Models/User');
+  userId() {
+    return this.belongsTo('App/Models/User', userId);
   }
 
   horarios() {

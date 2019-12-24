@@ -2,16 +2,56 @@
 /** @type {typeof import('@adonisjs/framework/src/Route/Manager')} */
 const Route = use('Route')
 
-Route.get('/', () => {
-  return { greeting: 'Hello world in JSON' }
-}).middleware(['auth'])
+Route
+  .post('/register', 'AuthController.register')
+  .validator('User')
 
-Route.post('/register', 'AuthController.register')
-Route.post('/authenticate', 'AuthController.authenticate')
+Route
+  .post('/authenticate', 'AuthController.authenticate')
+  .validator('User')
+
 
 Route.group(() => {
   Route
-  .resource('faltas', "FaltaController")
-  .except('update')
-  .apiOnly()
+    .resource('periodos', 'PeriodoController')
+    .apiOnly()
+}).middleware(['auth']);
+
+Route.group(() => {
+  Route
+    .resource('faltas', "FaltaController")
+    .apiOnly()
+}).middleware(['auth']);
+
+
+Route.group(() => {
+  Route
+    .resource('notas', "NotaController")
+    .apiOnly()
+}).middleware(['auth']);
+
+Route.group(() => {
+  Route
+    .resource('aulas', "AulaController")
+    .apiOnly()
+}).middleware(['auth']);
+
+Route.group(() => {
+  Route
+    .resource('horarios', "HorarioController")
+    .apiOnly()
+}).middleware(['auth']);
+
+Route.group(() => {
+  Route
+    .resource('materias', "MateriaController")
+    .apiOnly()
+}).middleware(['auth']);
+
+
+Route.group(() => {
+  Route
+    .resource('configurations', "ConfiguracoeController")
+    .except(['destroy', 'create', 'store'])
+    .apiOnly()
 }).middleware(['auth']);
