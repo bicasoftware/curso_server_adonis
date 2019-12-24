@@ -20,6 +20,7 @@ Route.group(() => {
 Route.group(() => {
   Route
     .resource('faltas', "FaltaController")
+    .except(['update', 'index'])
     .apiOnly()
 }).middleware(['auth']);
 
@@ -27,24 +28,27 @@ Route.group(() => {
 Route.group(() => {
   Route
     .resource('notas', "NotaController")
+    .except(['index'])
     .apiOnly()
 }).middleware(['auth']);
 
 Route.group(() => {
   Route
     .resource('aulas', "AulaController")
+    .except(['update', 'index'])
     .apiOnly()
 }).middleware(['auth']);
 
 Route.group(() => {
-  Route
-    .resource('horarios', "HorarioController")
-    .apiOnly()
+  Route.post('horarios', 'HorarioController.createMany')  
+  Route.get('horarios/:id', 'HorarioController.findByPeriodo')
+  Route.delete('horarios/:id', 'HorarioController.deleteByPeriodo') 
 }).middleware(['auth']);
 
 Route.group(() => {
   Route
     .resource('materias', "MateriaController")
+    .except(['index'])
     .apiOnly()
 }).middleware(['auth']);
 

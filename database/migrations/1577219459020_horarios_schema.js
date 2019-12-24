@@ -15,8 +15,8 @@ class HorariosSchema extends Schema {
         .onUpdate('CASCADE')
         .onDelete('CASCADE')
 
-      table.date('inicio').notNullable()
-      table.date('termino').notNullable()
+      table.string('inicio', 5).notNullable()
+      table.string('termino', 5).notNullable()
       table.integer('ordemaula').notNullable().default(0)
 
       table.timestamps()

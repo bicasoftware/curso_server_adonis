@@ -1,6 +1,6 @@
 'use strict'
 
-const notas = use('App/Models/Aula')
+const notas = use('App/Models/Nota')
 const db = use('Database')
 
 /** @typedef {import('@adonisjs/framework/src/Request')} Request */
@@ -11,19 +11,6 @@ const db = use('Database')
  * Resourceful controller for interacting with notas
  */
 class NotaController {
-  /**
-   * Show a list of all notas.
-   * GET notas
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async index() {
-    return await notas.all()
-  }
-
   /**
    * Create/save a new nota.
    * POST notas
@@ -38,7 +25,7 @@ class NotaController {
   }
 
   /**
-   * Display a single nota.
+   * Lista notas por materia.
    * GET notas/:id
    *
    * @param {object} ctx
@@ -47,7 +34,9 @@ class NotaController {
    * @param {View} ctx.view
    */
   async show({ params }) {
-    return await notas.findOrFail(params.id)
+    return notas.query()
+      .where({ materiaId: params.id })
+      .fetch()
   }
 
   /**
@@ -58,11 +47,11 @@ class NotaController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async update({ params, request, response }) {
-    const data = request.only(['materiaId', 'data', 'nota'])
+  async update({ params, request }) {
+    const data = request.only(['nota'])
     const count = await
-      db
-        .table('notas')
+      notas
+        .query()
         .where({ id: params.id })
         .update({ ...data })
 
@@ -77,8 +66,13 @@ class NotaController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async destroy({ params, request, response }) {
-    const count = await db.table('notas').where({ id: params.id }).delete()
+  async destroy({ params }) {
+    const count = await
+      notas
+        .query()
+        .where({ id: params.id })
+        .delete()
+
     return { removed: count }
   }
 }

@@ -11,61 +11,19 @@ const db = use('Database')
  * Resourceful controller for interacting with horarios
  */
 class HorarioController {
-  /**
-   * Show a list of all horarios.
-   * GET horarios
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async index() {
-    return await horarios.all()
+  async findByPeriodo({ params }) {
+    return await horarios
+      .query()
+      .where({ periodoId: params.id })
+      .fetch()
   }
 
-  /**
-   * Create/save a new horario.
-   * POST horarios
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   */
-  async store({ request, response }) {
-    const data = request.only(['periodoId', 'inicio', 'termino', 'ordemaula'])
-    return await horarios.create({ ...data })
-  }
-
-  /**
-   * Display a single horario.
-   * GET horarios/:id
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async show({ params }) {
-    return await horarios.findOrFail(params.id)
-  }
-
-  /**
-   * Update horario details.
-   * PUT or PATCH horarios/:id
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   */
-  async update({ params, request, response }) {
-    const data = request.only(['periodoId', 'inicio', 'termino', 'ordemaula'])
-    const c = await db
-      .table('horarios')
-      .where({ id: params.id })
-      .update({ ...data })
-
-    return { updated: c }
+  async createMany({ request }) {
+    const listHorarios = request.only(['horarios'])
+    listHorarios.horarios.forEach(h => {
+      horarios.create({ ...h })
+    })
+    return { status: "ok" };
   }
 
   /**
@@ -76,8 +34,13 @@ class HorarioController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async destroy({ params, request, response }) {
-    const count = await db.table('horarios').where({ id: params.id }).delete()
+  async deleteByPeriodo({ params }) {
+    const count = await 
+      horarios
+        .query()
+        .where({ periodoId: params.id })
+        .delete()
+
     return { deleted: count }
   }
 }

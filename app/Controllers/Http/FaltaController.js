@@ -1,7 +1,7 @@
 'use strict'
 
 const faltas = use('App/Models/Falta')
-const db = use('Database')
+// const db = use('Database')
 
 /** @typedef {import('@adonisjs/framework/src/Request')} Request */
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
@@ -12,19 +12,6 @@ const db = use('Database')
  */
 class FaltaController {
   /**
-   * Show a list of all faltas.
-   * GET faltas
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async index() {
-    return await faltas.all()
-  }
-
-  /**
    * Create/save a new falta.
    * POST faltas
    *
@@ -33,12 +20,12 @@ class FaltaController {
    * @param {Response} ctx.response
    */
   async store({ request }) {
-    const data = request.only(['data', 'ordemAula']);
+    const data = request.only(['data', 'ordemAula', 'materiaId']);
     return await faltas.create({ ...data })
   }
 
   /**
-   * Display a single falta.
+   * Lista faltas por materia
    * GET faltas/:id
    *
    * @param {object} ctx
@@ -47,26 +34,12 @@ class FaltaController {
    * @param {View} ctx.view
    */
   async show({ params }) {
-    return await faltas.findOrFail(params.id)
-  }
 
-  /**
-   * Update falta details.
-   * PUT or PATCH faltas/:id
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   */
-  async update({ params, request }) {
-    //TODO - ver como fazer o update
-    const data = request.only(['data', 'ordemAula']);
-    const updated = await db
-      .table('faltas')
-      .where({ id: params.id })
-      .update({ ...data })
-
-    return { updated: updated }
+    return await
+      faltas
+        .query()
+        .where({ materiaId: params.id })
+        .fetch()
   }
 
   /**
@@ -77,9 +50,14 @@ class FaltaController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async destroy({ params, auth }) {
-    const falta = await faltas.findOrFail(params.id)
-    await falta.delete();
+  async destroy({ params }) {
+    const c = await
+      faltas
+        .query()
+        .where({ id: params.id })
+        .delete()
+
+    return { removed: c }
   }
 }
 

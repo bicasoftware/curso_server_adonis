@@ -1,7 +1,6 @@
 'use strict'
 
 const materias = use('App/Models/Materia')
-const db = use('Database')
 
 /** @typedef {import('@adonisjs/framework/src/Request')} Request */
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
@@ -12,19 +11,6 @@ const db = use('Database')
  */
 class MateriaController {
   /**
-   * Show a list of all materias.
-   * GET materias
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async index() {
-    return materias.all()
-  }
-
-  /**
    * Create/save a new materia.
    * POST materias
    *
@@ -32,7 +18,7 @@ class MateriaController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async store({ request, response }) {
+  async store({ request }) {
     const data = request.only([
       'periodoId', 'cor', 'nome', 'sigla', 'freq', 'medaprov'
     ])
@@ -49,7 +35,7 @@ class MateriaController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async show({ params, request, response, view }) {
+  async show({ params }) {
     return await materias.findOrFail(params.id)
   }
 
@@ -61,14 +47,14 @@ class MateriaController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async update({ params, request, response }) {
+  async update({ params, request }) {
     const data = request.only([
       'periodoId', 'cor', 'nome', 'sigla', 'freq', 'medaprov'
     ])
 
     const c = await
-      db
-        .table('materias')
+      materias
+        .query()
         .where({ id: params.id })
         .update({ ...data })
 
@@ -83,10 +69,10 @@ class MateriaController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async destroy({ params, request, response }) {
+  async destroy({ params }) {
     const c = await
-      db
-        .table('materias')
+      materias
+        .query()
         .where({ id: params.id })
         .delete()
 

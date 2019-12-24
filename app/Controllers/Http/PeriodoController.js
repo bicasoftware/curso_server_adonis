@@ -1,7 +1,6 @@
 'use strict'
 
-const periodo = use('App/Models/Periodo')
-const db = use('Database');
+const periodos = use('App/Models/Periodo')
 
 /** @typedef {import('@adonisjs/framework/src/Request')} Request */
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
@@ -18,7 +17,10 @@ class PeriodoController {
    * @param {View} ctx.view
    */
   async index({ auth }) {
-    return await db.table('periodos').where('userId', auth.user.id);
+    return await periodos
+      .query()
+      .where('userId', auth.user.id)
+      .fetch();
   }
 
   /**
@@ -34,7 +36,7 @@ class PeriodoController {
       'numperiodo', 'aulasdia', 'inicio', 'termino', 'presObrig', 'medaprov'
     ])
 
-    return await periodo.create({ ...data, userId: auth.user.id })
+    return await periodos.create({ ...data, userId: auth.user.id })
   }
 
   /**
@@ -47,10 +49,12 @@ class PeriodoController {
    * @param {View} ctx.view
    */
   async show({ params, auth }) {
-    return await 
-      db
+    return await
+      periodos
+        .query()
         .table('periodos')
         .where({ id: params.id, userId: auth.user.id })
+        .fetch()
   }
 
   /**
@@ -65,7 +69,14 @@ class PeriodoController {
     const data = request.only([
       'numperiodo', 'aulasdia', 'inicio', 'termino', 'presObrig', 'medaprov'
     ])
-    return await db.table('periodos').where({ id: params.id }).update({ ...data })
+
+    const c = await
+      periodos
+        .query()
+        .where({ id: params.id })
+        .update({ ...data })
+
+    return { updated: c }
   }
 
   /**
@@ -77,7 +88,11 @@ class PeriodoController {
    * @param {Response} ctx.response
    */
   async destroy({ params, auth }) {
-    const removed = await db.table('periodos').where({ id: params.id, userId: auth.user.id }).delete();
+    const removed = await
+      periodos
+        .query()
+        .where({ id: params.id, userId: auth.user.id })
+        .delete();
     return { removed: removed }
   }
 }
