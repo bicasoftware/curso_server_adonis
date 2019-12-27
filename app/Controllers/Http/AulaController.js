@@ -2,51 +2,20 @@
 
 const aulas = use('App/Models/Aula')
 
-/** @typedef {import('@adonisjs/framework/src/Request')} Request */
-/** @typedef {import('@adonisjs/framework/src/Response')} Response */
-/** @typedef {import('@adonisjs/framework/src/View')} View */
-
-/**
- * Resourceful controller for interacting with aulas
- */
 class AulaController {
-  /**
-   * Create/save a new aula.
-   * POST aulas
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   */
-  async store({ request }) {
-    const data = request.only(['materiaId', 'weekday', 'ordem'])
+  async create({ request }) {
+    const data = request.only(['materia_id', 'weekday', 'ordem'])
     return await aulas.create({ ...data })
   }
 
-  /**
-   * Lista aulas por materia.
-   * GET aulas/:id
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async show({ params }) {
+  async findByMateria({ params }) {
     return await aulas
       .query()
-      .wher({ materiaId: params.id })
+      .where({ materia_id: params.id })
+      .fetch()
   }
-
-  /**
-   * Delete a aula with id.
-   * DELETE aulas/:id
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   */
-  async destroy({ params }) {
+  
+  async deleteById({ params }) {
     const removed = await
       aulas
         .query()

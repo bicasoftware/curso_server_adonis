@@ -1,7 +1,6 @@
 'use strict'
 
 const notas = use('App/Models/Nota')
-const db = use('Database')
 
 /** @typedef {import('@adonisjs/framework/src/Request')} Request */
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
@@ -20,7 +19,7 @@ class NotaController {
    * @param {Response} ctx.response
    */
   async store({ request }) {
-    const data = request.only(['materiaId', 'data', 'nota'])
+    const data = request.only(['materia_id', 'data', 'nota'])
     return notas.create({ ...data })
   }
 
@@ -35,7 +34,7 @@ class NotaController {
    */
   async show({ params }) {
     return notas.query()
-      .where({ materiaId: params.id })
+      .where({ materia_id: params.id })
       .fetch()
   }
 

@@ -14,7 +14,7 @@ class HorarioController {
   async findByPeriodo({ params }) {
     return await horarios
       .query()
-      .where({ periodoId: params.id })
+      .where({ periodo_id: params.id })
       .fetch()
   }
 
@@ -38,7 +38,7 @@ class HorarioController {
     const count = await 
       horarios
         .query()
-        .where({ periodoId: params.id })
+        .where({ periodo_id: params.id })
         .delete()
 
     return { deleted: count }

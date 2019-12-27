@@ -19,7 +19,11 @@ class PeriodoController {
   async index({ auth }) {
     return await periodos
       .query()
-      .where('userId', auth.user.id)
+      .where('user_id', auth.user.id)
+      .with('materias.aulas')
+      .with('materias.faltas')
+      .with('materias.notas')
+      .with('horarios')
       .fetch();
   }
 
@@ -36,7 +40,7 @@ class PeriodoController {
       'numperiodo', 'aulasdia', 'inicio', 'termino', 'presObrig', 'medaprov'
     ])
 
-    return await periodos.create({ ...data, userId: auth.user.id })
+    return await periodos.create({ ...data, user_id: auth.user.id })
   }
 
   /**
@@ -53,7 +57,11 @@ class PeriodoController {
       periodos
         .query()
         .table('periodos')
-        .where({ id: params.id, userId: auth.user.id })
+        .where({ id: params.id, user_id: auth.user.id })
+        .with('materias.aulas')
+        .with('materias.faltas')
+        .with('materias.notas')
+        .with('horarios')
         .fetch()
   }
 
@@ -91,7 +99,7 @@ class PeriodoController {
     const removed = await
       periodos
         .query()
-        .where({ id: params.id, userId: auth.user.id })
+        .where({ id: params.id, user_id: auth.user.id })
         .delete();
     return { removed: removed }
   }

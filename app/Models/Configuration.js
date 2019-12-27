@@ -7,6 +7,10 @@ class Configuration extends Model {
   periodo() {
     return this.belongsTo('App/Models/User')
   }
+
+  static get hidden() {
+    return ['user_id', 'created_at', 'updated_at']
+  }
 }
 
 module.exports = Configuration

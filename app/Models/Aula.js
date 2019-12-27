@@ -7,6 +7,10 @@ class Aula extends Model {
   materia() {
     return this.belongsTo('App/Models/Materia')
   }
+
+  static get hidden() {
+    return ['materia_id', 'created_at', 'updated_at']
+  }
 }
 
 module.exports = Aula

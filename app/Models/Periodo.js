@@ -8,12 +8,16 @@ class Periodo extends Model {
     return this.belongsTo('App/Models/User', userId);
   }
 
+  materias () {
+    return this.hasMany('App/Models/Materia')
+  }
+
   horarios() {
     return this.hasMany('App/Models/Horario')
   }
 
-  configuration() {
-    return this.hasOne('App/Models/Configuration')
+  static get hidden() {
+    return ['user_id', 'created_at', 'updated_at']
   }
 }
 

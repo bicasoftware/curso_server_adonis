@@ -8,7 +8,7 @@ class PeriodosSchema extends Schema {
     this.create('periodos', (table) => {
       table.increments()
       table
-        .integer('userId')        
+        .integer('user_id')        
         .unsigned()
         .references('id')
         .inTable('users')

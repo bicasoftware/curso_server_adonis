@@ -8,7 +8,7 @@ class FaltasSchema extends Schema {
     this.create('faltas', (table) => {
       table.increments()
       table
-        .integer('materiaId')        
+        .integer('materia_id')        
         .unsigned()
         .references('id')
         .inTable('materias')

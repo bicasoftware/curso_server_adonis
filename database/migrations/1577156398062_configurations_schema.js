@@ -8,7 +8,7 @@ class ConfigurationsSchema extends Schema {
     this.create('configurations', (table) => {
       table.increments()
       table
-        .integer('userId')
+        .integer('user_id')
         .unsigned()
         .references('id')
         .inTable('users')

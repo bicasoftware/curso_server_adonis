@@ -7,6 +7,10 @@ class Horario extends Model {
   periodo() {
     return this.belongsTo('App/Models/Periodo')
   }
+
+  static get hidden() {
+    return ['periodo_id', 'created_at', 'updated_at']
+  }
 }
 
 module.exports = Horario

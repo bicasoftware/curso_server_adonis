@@ -8,7 +8,7 @@ class HorariosSchema extends Schema {
     this.create('horarios', (table) => {
       table.increments()
       table
-        .integer('periodoId')        
+        .integer('periodo_id')        
         .unsigned()
         .references('id')
         .inTable('periodos')

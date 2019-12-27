@@ -20,7 +20,7 @@ class MateriaController {
    */
   async store({ request }) {
     const data = request.only([
-      'periodoId', 'cor', 'nome', 'sigla', 'freq', 'medaprov'
+      'periodo_id', 'cor', 'nome', 'sigla', 'freq', 'medaprov'
     ])
 
     return await materias.create({ ...data })
@@ -36,7 +36,14 @@ class MateriaController {
    * @param {View} ctx.view
    */
   async show({ params }) {
-    return await materias.findOrFail(params.id)
+    return await
+     materias
+      .query()
+      .where({periodo_id: params.id})
+      .with('aulas')
+      .with('faltas')
+      .with('notas')
+      .fetch()
   }
 
   /**
@@ -49,7 +56,7 @@ class MateriaController {
    */
   async update({ params, request }) {
     const data = request.only([
-      'periodoId', 'cor', 'nome', 'sigla', 'freq', 'medaprov'
+      'periodo_id', 'cor', 'nome', 'sigla', 'freq', 'medaprov'
     ])
 
     const c = await

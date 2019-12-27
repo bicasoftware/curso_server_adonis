@@ -1,5 +1,6 @@
 'use strict'
 /** @type {typeof import('@adonisjs/framework/src/Route/Manager')} */
+
 const Route = use('Route')
 
 Route
@@ -13,49 +14,74 @@ Route
 
 Route.group(() => {
   Route
-    .resource('periodos', 'PeriodoController')
+    .resource('', 'PeriodoController')
+    .validator(
+      new Map([
+        [['store'], ['PostPeriodo']]
+      ])
+    )
     .apiOnly()
-}).middleware(['auth']);
+}).middleware(['auth']).prefix('periodos');
 
 Route.group(() => {
   Route
-    .resource('faltas', "FaltaController")
+    .resource('/', "FaltaController")
     .except(['update', 'index'])
+    .validator(
+      new Map([
+        [['store'], ['PostFaltas']]
+      ])
+    )
     .apiOnly()
-}).middleware(['auth']);
+}).middleware(['auth']).prefix('faltas');
 
 
 Route.group(() => {
   Route
-    .resource('notas', "NotaController")
+    .resource('', 'NotaController')
+    .apiOnly()
+    .except(['index', 'create'])
+    .validator(
+      new Map([
+        [['store'], ['PostNotas']],
+        [['update'], ['PutNotas']],
+      ])
+    )
+}).middleware(['auth']).prefix('notas');
+
+Route.group(() => {
+  Route
+    .post('/', 'AulaController.create')
+    .validator('PostAula')
+
+  Route
+    .get('/:id', 'AulaController.findByMateria')
+
+  Route
+    .delete('/:id', 'AulaController.deleteById')
+}).middleware(['auth']).prefix('aulas');
+
+Route.group(() => {
+  Route.post('/', 'HorarioController.createMany').validator('PostHorarios')
+  Route.get('/:id', 'HorarioController.findByPeriodo')
+  Route.delete('/:id', 'HorarioController.deleteByPeriodo')
+}).prefix('/horarios').middleware(['auth']);
+
+Route.group(() => {
+  Route
+    .resource('', "MateriaController")
+    .apiOnly()
     .except(['index'])
-    .apiOnly()
-}).middleware(['auth']);
-
-Route.group(() => {
-  Route
-    .resource('aulas', "AulaController")
-    .except(['update', 'index'])
-    .apiOnly()
-}).middleware(['auth']);
-
-Route.group(() => {
-  Route.post('horarios', 'HorarioController.createMany')  
-  Route.get('horarios/:id', 'HorarioController.findByPeriodo')
-  Route.delete('horarios/:id', 'HorarioController.deleteByPeriodo') 
-}).middleware(['auth']);
-
-Route.group(() => {
-  Route
-    .resource('materias', "MateriaController")
-    .except(['index'])
-    .apiOnly()
-}).middleware(['auth']);
+    .validator(
+      new Map([
+        [['store'], ['PostMaterias']],
+        [['update'], ['PostMaterias']],
+      ])
+    )
+}).middleware(['auth']).prefix('/materias');
 
 
 Route.group(() => {
-  Route
-    .resource('configurations', "ConfiguracoeController")
-    .except(['destroy', 'create', 'store'])
-    .apiOnly()
-}).middleware(['auth']);
+  Route.get('', "ConfiguracoeController.find")
+  Route.put('', 'ConfiguracoeController.update').validator('PutConfigs')
+}).middleware(['auth']).prefix('configurations');

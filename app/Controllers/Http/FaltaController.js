@@ -20,7 +20,7 @@ class FaltaController {
    * @param {Response} ctx.response
    */
   async store({ request }) {
-    const data = request.only(['data', 'ordemAula', 'materiaId']);
+    const data = request.only(['data', 'ordemAula', 'materia_id']);
     return await faltas.create({ ...data })
   }
 
@@ -38,7 +38,7 @@ class FaltaController {
     return await
       faltas
         .query()
-        .where({ materiaId: params.id })
+        .where({ materia_id: params.id })
         .fetch()
   }
 
