@@ -6,10 +6,23 @@ const configs = use('App/Models/Configuration')
 
 class AuthController {
 
-  async register({ request }) {
-    const data = request.only(['username', 'email', 'password'])
+  async register({ request, auth }) {
+    const { email, password, username } = request.all()
 
-    return await User.create(data)
+    const user = await User.query().where({ email: email }).first()
+    if (user) {
+      return {
+        field: 'email',
+        message: 'email already exists'
+      }
+    } else {
+      const newUser = await User.create({ email: email, password: password, username: username })
+      const attempt = auth.attempt(email, password)
+      const userData = await this.findUserData(newUser)
+      userData.token = attempt.token
+      userData.email = email
+      return userData
+    }
   }
 
   async authenticate({ request, auth }) {
@@ -17,6 +30,40 @@ class AuthController {
     const authData = await auth.attempt(email, password)
 
     const user = await User.query().where({ email: email }).first()
+
+    const userData = await this.findUserData(user)
+    userData.email = email
+    userData.token = authData.token
+
+    return userData
+  }
+
+  async unregister({ request, auth }) {
+    const { email, password } = request.all()
+
+    const finduser = await User.query().where({ email: email }).first()
+    if (!finduser) {
+      return {
+        field: 'email',
+        message: 'email not registered'
+      }
+    } else {
+      const tryAuth = await auth.attempt(email, password)
+      if (!tryAuth) {
+        return {
+          field: 'password',
+          message: 'invalid password. Account can\'t be removed'
+        }
+      } else {
+        const count = await User.query().where({ email: email }).delete()
+        return {
+          removed: count
+        }
+      }
+    }
+  }
+
+  async findUserData(user) {
     const data = await
       periodos
         .query()
@@ -28,10 +75,7 @@ class AuthController {
         .fetch()
 
     const conf = await configs.query().where({ user_id: user.id }).first()
-
     return {
-      email: email,
-      token: authData.token,
       data: { periodos: data },
       configurations: conf
     }

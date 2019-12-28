@@ -11,6 +11,9 @@ Route
   .post('/authenticate', 'AuthController.authenticate')
   .validator('User')
 
+Route
+  .post('/unregister', 'AuthController.unregister')
+  .validator('User')
 
 Route.group(() => {
   Route
