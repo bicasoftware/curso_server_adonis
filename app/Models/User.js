@@ -2,6 +2,8 @@
 
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const Model = use('Model')
+const periodos = use('App/Models/Periodo')
+const configuracoes = use('App/Models/Configuration')
 
 /** @type {import('@adonisjs/framework/src/Hash')} */
 const Hash = use('Hash')
@@ -18,6 +20,21 @@ class User extends Model {
       if (userInstance.dirty.password) {
         userInstance.password = await Hash.make(userInstance.password)
       }
+    })
+
+    /**
+     * Hook que cria novo periodo e configuracoes após novo usuário ser criado
+    */
+    this.addHook('afterCreate', async (user) => {
+      await periodos.create({
+        inicio: "2020-01-14",
+        termino: "2020-06-12",
+        user_id: user.id
+      })
+
+      await configuracoes.create({
+        user_id: user.id
+      })
     })
   }
 

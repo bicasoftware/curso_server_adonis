@@ -17,25 +17,27 @@ class AuthController {
       }
     } else {
       const newUser = await User.create({ email: email, password: password, username: username })
-      const attempt = auth.attempt(email, password)
+      const attempt = await auth.attempt(email, password)
       const userData = await this.findUserData(newUser)
-      userData.token = attempt.token
-      userData.email = email
-      return userData
+      return {
+        ...userData,
+        email: email,
+        token: attempt.token
+      }
     }
   }
 
   async authenticate({ request, auth }) {
     const { email, password } = request.all()
-    const authData = await auth.attempt(email, password)
-
+    const attempt = await auth.attempt(email, password)
     const user = await User.query().where({ email: email }).first()
-
+    
     const userData = await this.findUserData(user)
-    userData.email = email
-    userData.token = authData.token
-
-    return userData
+    return {
+      ...userData,
+      email: email,
+      token: attempt.token
+    }
   }
 
   async unregister({ request, auth }) {
