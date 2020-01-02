@@ -4,6 +4,9 @@
 const Model = use('Model')
 
 class Token extends Model {
+  userId() {
+    return this.belongsTo('App/Models/User')
+  }
 }
 
 module.exports = Token

@@ -3,17 +3,22 @@
 
 const Route = use('Route')
 
-Route
-  .post('/register', 'AuthController.register')
-  .validator('User')
+Route.group(() => {
+  Route
+    .post('/register', 'AuthController.register')
+    .validator('User')
 
-Route
-  .post('/authenticate', 'AuthController.authenticate')
-  .validator('User')
+  Route
+    .post('/authenticate', 'AuthController.authenticate')
+    .validator('User')
 
-Route
-  .post('/unregister', 'AuthController.unregister')
-  .validator('User')
+  Route
+    .post('/unregister', 'AuthController.unregister')
+    .validator('User')
+
+  Route
+    .post('/refresh', 'AuthController.refreshToken')
+}).prefix('auth')
 
 Route.group(() => {
   Route

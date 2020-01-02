@@ -35,7 +35,7 @@ class User extends Model {
       await configuracoes.create({
         user_id: user.id
       })
-    })
+    })    
   }
 
   /**
@@ -57,7 +57,7 @@ class User extends Model {
   }
 
   static get hidden() {
-    return ['created_at', 'updated_at', 'refreshToken']
+    return ['created_at', 'updated_at']
   }
 }
 

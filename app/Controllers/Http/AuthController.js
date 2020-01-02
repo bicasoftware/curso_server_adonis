@@ -17,26 +17,37 @@ class AuthController {
       }
     } else {
       const newUser = await User.create({ email: email, password: password, username: username })
-      const attempt = await auth.attempt(email, password)
+      const attempt = await
+        auth
+          .withRefreshToken()
+          .attempt(email, password)
+
       const userData = await this.findUserData(newUser)
       return {
         ...userData,
         email: email,
-        token: attempt.token
+        token: attempt.token,
+        refresh_token: attempt.refreshToken
       }
     }
   }
 
   async authenticate({ request, auth }) {
     const { email, password } = request.all()
-    const attempt = await auth.attempt(email, password)
+
+    const attempt = await auth
+      .withRefreshToken()
+      .attempt(email, password)
+
     const user = await User.query().where({ email: email }).first()
-    
+
     const userData = await this.findUserData(user)
+
     return {
       ...userData,
       email: email,
-      token: attempt.token
+      token: attempt.token,
+      refresh_token: attempt.refreshToken
     }
   }
 
@@ -62,6 +73,15 @@ class AuthController {
           removed: count
         }
       }
+    }
+  }
+
+  async refreshToken({ request, auth }) {
+    const rt = request.only(['refresh_token'])
+    const newToken = await auth.generateForRefreshToken(rt.refresh_token, true)
+    return {
+      token: newToken.token,
+      refreshToken: newToken.refreshToken
     }
   }
 
