@@ -51,29 +51,22 @@ class AuthController {
     }
   }
 
-  async unregister({ request, auth }) {
-    const { email, password } = request.all()
+  async unregister({ auth }) {
+    const id = auth.user.id;
 
-    const finduser = await User.query().where({ email: email }).first()
-    if (!finduser) {
+    const user = await User.query().where({ id: id }).first()
+
+    if (!user) {
       return {
-        field: 'email',
-        message: 'email not registered'
+        field: 'authentication',
+        message: 'impossible to authenticate a user via token'
       }
     } else {
-      const tryAuth = await auth.attempt(email, password)
-      if (!tryAuth) {
-        return {
-          field: 'password',
-          message: 'invalid password. Account can\'t be removed'
-        }
-      } else {
-        const count = await User.query().where({ email: email }).delete()
-        return {
-          removed: count
-        }
+      const count = await user.delete()
+      return {
+        removed: count
       }
-    }
+    }    
   }
 
   async refreshToken({ request, auth }) {

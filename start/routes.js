@@ -13,8 +13,8 @@ Route.group(() => {
     .validator('User')
 
   Route
-    .post('/unregister', 'AuthController.unregister')
-    .validator('User')
+    .post('/unregister', 'AuthController.unregister')    
+    .middleware(['auth'])
 
   Route
     .post('/refresh', 'AuthController.refreshToken')
