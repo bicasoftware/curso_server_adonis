@@ -3,6 +3,10 @@
 
 const Route = use('Route')
 
+Route.get(() => {
+  return { "status": ok }
+})
+
 Route.group(() => {
   Route
     .post('/register', 'AuthController.register')
@@ -13,7 +17,7 @@ Route.group(() => {
     .validator('User')
 
   Route
-    .post('/unregister', 'AuthController.unregister')    
+    .post('/unregister', 'AuthController.unregister')
     .middleware(['auth'])
 
   Route
