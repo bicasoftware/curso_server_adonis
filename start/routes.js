@@ -3,7 +3,7 @@
 
 const Route = use('Route')
 
-Route.get(() => {
+Route.get('/', () => {
   return { "status": ok }
 })
 
