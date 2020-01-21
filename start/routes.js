@@ -74,7 +74,7 @@ Route.group(() => {
 }).middleware(['auth']).prefix('aulas');
 
 Route.group(() => {
-  Route.post('/', 'HorarioController.createMany').validator('PostHorarios')
+  Route.post('/', 'HorarioController.createMany')
   Route.get('/:id', 'HorarioController.findByPeriodo')
   Route.delete('/:id', 'HorarioController.deleteByPeriodo')
 }).prefix('/horarios').middleware(['auth']);

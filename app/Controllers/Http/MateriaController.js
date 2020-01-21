@@ -65,7 +65,7 @@ class MateriaController {
         .where({ id: params.id })
         .update({ ...data })
 
-    return { updated: c }
+    return { modified: c }
   }
 
   /**
@@ -83,7 +83,7 @@ class MateriaController {
         .where({ id: params.id })
         .delete()
 
-    return { deleted: c }
+    return { removed: c }
   }
 }
 

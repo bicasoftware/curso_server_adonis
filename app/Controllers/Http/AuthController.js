@@ -6,15 +6,15 @@ const configs = use('App/Models/Configuration')
 
 class AuthController {
 
-  async register({ request, auth }) {
+  async register({ request, auth, response }) {
     const { email, password, username } = request.all()
 
     const user = await User.query().where({ email: email }).first()
     if (user) {
-      return {
+      response.status(401).send({
         field: 'email',
         message: 'email already exists'
-      }
+      })
     } else {
       const newUser = await User.create({ email: email, password: password, username: username })
       const attempt = await
@@ -51,22 +51,23 @@ class AuthController {
     }
   }
 
-  async unregister({ auth }) {
+  async unregister({ auth, response }) {
     const id = auth.user.id;
 
     const user = await User.query().where({ id: id }).first()
 
     if (!user) {
-      return {
+      response.status(403).send({
         field: 'authentication',
         message: 'impossible to authenticate a user via token'
       }
+      )
     } else {
       const count = await user.delete()
       return {
         removed: count
       }
-    }    
+    }
   }
 
   async refreshToken({ request, auth }) {
@@ -91,7 +92,7 @@ class AuthController {
 
     const conf = await configs.query().where({ user_id: user.id }).first()
     return {
-      data: { periodos: data },
+      periodos: data,
       configurations: conf
     }
   }

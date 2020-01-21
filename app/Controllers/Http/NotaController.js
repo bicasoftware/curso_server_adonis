@@ -54,7 +54,7 @@ class NotaController {
         .where({ id: params.id })
         .update({ ...data })
 
-    return { updated: count }
+    return { modified: count }
   }
 
   /**

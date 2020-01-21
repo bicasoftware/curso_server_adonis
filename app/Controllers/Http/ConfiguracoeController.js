@@ -33,7 +33,7 @@ class ConfiguracoeController {
         .where({ user_id: auth.user.id })
         .update({ ...data })
 
-    return { updated: c }
+    return { modified: c }
   }  
 }
 

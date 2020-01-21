@@ -19,11 +19,24 @@ class HorarioController {
   }
 
   async createMany({ request }) {
-    const listHorarios = request.only(['horarios'])
-    listHorarios.horarios.forEach(h => {
-      horarios.create({ ...h })
-    })
-    return { status: "ok" };
+
+    const listHorarios = JSON.parse(request.raw());
+    const periodo_id = listHorarios[0].periodo_id;
+
+    await horarios
+      .query()
+      .where({ periodo_id: periodo_id })
+      .delete()
+
+    await Promise.all(
+      listHorarios.map(h => horarios.create({ ...h }))
+    )
+
+    return await horarios
+      .query()
+      .where({ periodo_id: periodo_id })
+      .fetch()   
+
   }
 
   /**
@@ -35,13 +48,13 @@ class HorarioController {
    * @param {Response} ctx.response
    */
   async deleteByPeriodo({ params }) {
-    const count = await 
+    const count = await
       horarios
         .query()
         .where({ periodo_id: params.id })
         .delete()
 
-    return { deleted: count }
+    return { removed: count }
   }
 }
 

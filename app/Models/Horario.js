@@ -9,7 +9,7 @@ class Horario extends Model {
   }
 
   static get hidden() {
-    return ['periodo_id', 'created_at', 'updated_at']
+    return ['created_at', 'updated_at']
   }
 }
 

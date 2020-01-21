@@ -84,7 +84,7 @@ class PeriodoController {
         .where({ id: params.id })
         .update({ ...data })
 
-    return { updated: c }
+    return { modified: c }
   }
 
   /**
